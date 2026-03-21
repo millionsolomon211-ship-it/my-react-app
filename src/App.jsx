@@ -55,7 +55,7 @@ const CookieApp = () => {
           <>
             <input name="fullName" placeholder="Name" onChange={handleInput} required /><br/>
             <input name="fatherName" placeholder="Father's Name" onChange={handleInput} required /><br/>
-            <input name="phone" type="Nember"  placeholder="Phone" onChange={handleInput} required /><br/>
+            <input name="phone" type="gitnumber"  placeholder="Phone" onChange={handleInput} required /><br/>
             <input name="email" type="email" placeholder="Email" onChange={handleInput} required /><br/>
             <input name="location" placeholder="Location" onChange={handleInput} required /><br/>
             <input name="birthDate" type="date" onChange={handleInput} required /><br/>
