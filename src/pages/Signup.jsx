@@ -1,60 +1,83 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 
 function Signup() {
-  const [form, setForm] = useState({
-    fullName: "",
-    email: "",
-    username: "",
-    phone: "",
-    password: ""
+  const [formData, setFormData] = useState({ 
+    firstName: '', lastName: '', username: '', email: '', phone: '', password: '' 
   });
-
+  const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = async (e) => {
+  const handleSignup = async (e) => {
     e.preventDefault();
+    setErrorMessage("");
 
-    const res = await fetch("http://localhost:5000/api/signup", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(form)
-    });
+    try {
+      const response = await fetch('http://localhost:3000/api/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+      const data = await response.json();
 
-    const data = await res.json();
-
-    if (res.ok) {
-      alert("Signup successful! Please login.");
-      navigate("/login");
-    } else {
-      alert(data.message);
+      if (response.ok) {
+        localStorage.setItem("token", data.token);
+        navigate('/dashboard');
+      } else {
+        setErrorMessage(data.error || data.message || "Signup failed");
+      }
+    } catch (err) {
+      setErrorMessage("Server connection error. Is the backend running?");
     }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>Signup</h2>
+    <form className="form" onSubmit={handleSignup}>
+      <p className="title">Register</p>
+      <p className="message">Signup now and get full access to our app.</p>
+      
+      {errorMessage && <div className="err-box">{errorMessage}</div>}
 
-      <input name="fullName" placeholder="Full Name" onChange={handleChange} required />
-      <input name="email" placeholder="Email" onChange={handleChange} required />
-      <input name="username" placeholder="Username" onChange={handleChange} required />
-      <input name="phone" placeholder="Phone" onChange={handleChange} required />
+      <div className="flex">
+        <label>
+          <input className="input" type="text" placeholder=" " required 
+            onChange={e => setFormData({...formData, firstName: e.target.value})} />
+          <span>Firstname</span>
+        </label>
+        <label>
+          <input className="input" type="text" placeholder=" " required 
+            onChange={e => setFormData({...formData, lastName: e.target.value})} />
+          <span>Lastname</span>
+        </label>
+      </div>
 
-      <input
-        name="password"
-        type="password"
-        placeholder="Password"
-        onChange={handleChange}
-        required
-      />
+      <label>
+        <input className="input" type="text" placeholder=" " required 
+          onChange={e => setFormData({...formData, username: e.target.value})} />
+        <span>Username</span>
+      </label>
 
-      <button type="submit">Signup</button>
+      <label>
+        <input className="input" type="email" placeholder=" " required 
+          onChange={e => setFormData({...formData, email: e.target.value})} />
+        <span>Email</span>
+      </label>
+
+      <label>
+        <input className="input" type="text" placeholder=" " required 
+          value={formData.phone}
+          onChange={e => setFormData({...formData, phone: e.target.value.replace(/\D/g, "")})} />
+        <span>Phone</span>
+      </label>
+
+      <label>
+        <input className="input" type="password" placeholder=" " required 
+          onChange={e => setFormData({...formData, password: e.target.value})} />
+        <span>Password</span>
+      </label>
+
+      <button className="submit">Create Account</button>
+      <p className="signin">Already have an account? <Link to="/login">Log In</Link></p>
     </form>
   );
 }
