@@ -9,8 +9,7 @@ const ProtectedRoute = ({ children }) => {
   return token ? children : <Navigate to="/login" replace />;
 };
 
-// 2. FOR GUESTS ONLY (Login/Signup)
-// This fixes your issue: If a token exists, bounce them to Dashboard
+
 const PublicRoute = ({ children }) => {
   const token = localStorage.getItem('token');
   return token ? <Navigate to="/dashboard" replace /> : children;

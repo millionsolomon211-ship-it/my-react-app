@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 
 function Signup() {
   const [formData, setFormData] = useState({ 
-    firstName: '', lastName: '', username: '', email: '', phone: '', password: '' 
+    full_Name: '', username: '', email: '', phone: '', password: '' 
   });
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
@@ -41,14 +41,10 @@ function Signup() {
       <div className="flex">
         <label>
           <input className="input" type="text" placeholder=" " required 
-            onChange={e => setFormData({...formData, firstName: e.target.value})} />
-          <span>Firstname</span>
+            onChange={e => setFormData({...formData, full_Name: e.target.value})} />
+          <span>Full tname</span>
         </label>
-        <label>
-          <input className="input" type="text" placeholder=" " required 
-            onChange={e => setFormData({...formData, lastName: e.target.value})} />
-          <span>Lastname</span>
-        </label>
+        
       </div>
 
       <label>
