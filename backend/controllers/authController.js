@@ -1,14 +1,13 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { OAuth2Client } from 'google-auth-library';
+// Removed OAuth2Client import
 import pool from '../db.js';
 
-// Initialize the Google Client
-//const googleClient = new OAuth2Client("936523820793-ti1bf7vsj7hie5v6nnqs8paeicesetsu.apps.googleusercontent.com");
 const JWT_SECRET = 'YOUR_SECRET_KEY';
 
+// --- SIGNUP LOGIC ---
 export const signup = async (req, res) => {
-    const { full_name,username, email, phone, password } = req.body;
+    const { full_name, username, email, phone, password } = req.body;
 
     try {
         // 1. Password Strength Check
@@ -42,6 +41,7 @@ export const signup = async (req, res) => {
     }
 };
 
+// --- LOGIN LOGIC ---
 export const login = async (req, res) => {
     const { identifier, password } = req.body;
     
@@ -64,41 +64,5 @@ export const login = async (req, res) => {
         res.json({ token, message: "Logged in!" });
     } catch (err) {
         res.status(500).json({ error: "Login error" });
-    }
-};
-
-// --- GOOGLE LOGIN LOGIC ---
-export const googleLogin = async (req, res) => {
-    const { token } = req.body;
-
-    try {
-        const ticket = await googleClient.verifyIdToken({
-            idToken: token,
-            audience: "936523820793-ti1bf7vsj7hie5v6nnqs8paeicesetsu.apps.googleusercontent.com",
-        });
-
-        const payload = ticket.getPayload();
-        const { email, name } = payload;
-
-        let userResult = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
-
-        let userId;
-        if (userResult.rows.length === 0) {
-            const newUsername = name.replace(/\s+/g, '').toLowerCase() + Math.floor(Math.random() * 1000);
-            const newUser = await pool.query(
-                "INSERT INTO users (username, email, password_hash) VALUES ($1, $2, $3) RETURNING id",
-                [newUsername, email, 'GOOGLE_AUTH_EXTERNAL']
-            );
-            userId = newUser.rows[0].id;
-        } else {
-            userId = userResult.rows[0].id;
-        }
-
-        const appToken = jwt.sign({ id: userId }, JWT_SECRET, { expiresIn: '24h' });
-        res.json({ token: appToken, message: "Google Login Successful!" });
-
-    } catch (err) {
-        console.error("Google verify error:", err);
-        res.status(400).json({ error: "Google verification failed" });
     }
 };

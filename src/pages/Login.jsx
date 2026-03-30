@@ -7,37 +7,7 @@ function Login() {
   const navigate = useNavigate();
 
   // GOOGLE SIGN-IN LOGIC
-  useEffect(() => {
-    /* global google */ 
-    const handleGoogleResponse = async (response) => {
-      try {
-        const res = await fetch('http://localhost:3000/api/google-login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ token: response.credential })
-        });
-        const data = await res.json();
-        if (res.ok) {
-          localStorage.setItem("token", data.token);
-          navigate('/dashboard');
-        } else {
-          setErrorMessage(data.error || "Google login failed");
-        }
-      } catch (err) {
-        setErrorMessage("Server error during Google login.");
-      }
-    };
-
-    google.accounts.id.initialize({
-      client_id: "936523820793-ti1bf7vsj7hie5v6nnqs8paeicesetsu.apps.googleusercontent.com",
-      callback: handleGoogleResponse
-    });
-
-    google.accounts.id.renderButton(
-      document.getElementById("googleBtn"),
-      { theme: "filled_black", size: "large", width: "100%" }
-    );
-  }, [navigate]);
+  
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -89,8 +59,7 @@ function Login() {
         <div style={{ flex: 1, height: '1px', background: '#333' }}></div>
       </div>
 
-      {/* GOOGLE BUTTON CONTAINER */}
-      <div id="googleBtn"></div>
+    
 
       <p className="signin">New user? <Link to="/signup">Register</Link></p>
     </form>

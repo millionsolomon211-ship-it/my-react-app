@@ -3,7 +3,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';  
 import pool from './db.js'; 
-import { signup, login, googleLogin } from './controllers/authController.js';
+import { signup, login} from './controllers/authController.js';
 
 const app = express();
 
@@ -39,7 +39,7 @@ app.use(express.json());
 // Apply the stricter authLimiter specifically to these routes
 app.post('/api/signup', authLimiter, signup);
 app.post('/api/login', authLimiter, login);
-app.post('/api/google-login', authLimiter, googleLogin);
+
 
 const PORT = 3000;
 app.listen(PORT, () => {
