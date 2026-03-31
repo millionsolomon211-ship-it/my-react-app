@@ -1,50 +1,42 @@
+import { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Dashboard from './pages/Dashboard';
 
-// 1. FOR LOGGED-IN USERS ONLY (Dashboard)
-const ProtectedRoute = ({ children }) => {
-  const token = localStorage.getItem('token');
-  return token ? children : <Navigate to="/login" replace />;
-};
-
-
-const PublicRoute = ({ children }) => {
-  const token = localStorage.getItem('token');
-  return token ? <Navigate to="/dashboard" replace /> : children;
-};
-
 function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(null); // 'null' while checking
+
+  useEffect(() => {
+    const verifyUser = async () => {
+      try {
+        // We must include credentials to send the cookie to the server
+        const res = await fetch('http://localhost:3000/api/check-auth', { 
+            credentials: 'include' 
+        });
+        const data = await res.json();
+        setIsAuthenticated(data.authenticated);
+      } catch (err) {
+        setIsAuthenticated(false);
+      }
+    };
+    verifyUser();
+  }, []);
+
+  // Prevent flicker while checking auth
+  if (isAuthenticated === null) return <div className="loading">Verifying Session...</div>;
+
   return (
     <BrowserRouter>
       <Routes>
-        {/* Root logic */}
-        <Route path="/" element={
-          localStorage.getItem('token') ? 
-          <Navigate to="/dashboard" replace /> : 
-          <Navigate to="/login" replace />
-        } />
-
-        {/* Use PublicRoute to block access if already logged in */}
-        <Route path="/login" element={
-          <PublicRoute>
-            <Login />
-          </PublicRoute>
-        } />
+        <Route path="/login" element={!isAuthenticated ? <Login /> : <Navigate to="/dashboard" />} />
+        <Route path="/signup" element={!isAuthenticated ? <Signup /> : <Navigate to="/dashboard" />} />
         
-        <Route path="/signup" element={
-          <PublicRoute>
-            <Signup />
-          </PublicRoute>
+        <Route path="/dashboard" element={
+          isAuthenticated ? <Dashboard /> : <Navigate to="/login" />
         } />
 
-        {/* Use ProtectedRoute to block access if NOT logged in */}
-        <Route path="/dashboard" element={
-          <ProtectedRoute>
-            <Dashboard />
-          </ProtectedRoute>
-        } />
+        <Route path="/" element={<Navigate to={isAuthenticated ? "/dashboard" : "/login"} />} />
       </Routes>
     </BrowserRouter>
   );

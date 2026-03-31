@@ -3,7 +3,11 @@ import { useNavigate, Link } from 'react-router-dom';
 
 function Signup() {
   const [formData, setFormData] = useState({ 
-    full_Name: '', username: '', email: '', phone: '', password: '' 
+    full_Name: '', // Matches the backend variable now
+    username: '', 
+    email: '', 
+    phone: '', 
+    password: '' 
   });
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
@@ -16,13 +20,16 @@ function Signup() {
       const response = await fetch('http://localhost:3000/api/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        // Send the JSON as is
         body: JSON.stringify(formData)
       });
+      
       const data = await response.json();
 
       if (response.ok) {
-        localStorage.setItem("token", data.token);
-        navigate('/dashboard');
+        // SUCCESS: Redirect to login 
+        // We don't store the token in localStorage anymore!
+        navigate('/login');
       } else {
         setErrorMessage(data.error || data.message || "Signup failed");
       }
@@ -34,17 +41,15 @@ function Signup() {
   return (
     <form className="form" onSubmit={handleSignup}>
       <p className="title">Register</p>
-      <p className="message">Signup now and get full access to our app.</p>
       
-      {errorMessage && <div className="err-box">{errorMessage}</div>}
+      {errorMessage && <div style={{color: 'red', marginBottom: '10px'}}>{errorMessage}</div>}
 
       <div className="flex">
         <label>
           <input className="input" type="text" placeholder=" " required 
             onChange={e => setFormData({...formData, full_Name: e.target.value})} />
-          <span>Full tname</span>
+          <span>Full Name</span>
         </label>
-        
       </div>
 
       <label>
