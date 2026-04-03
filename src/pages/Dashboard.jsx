@@ -10,10 +10,18 @@ function Dashboard() {
     if (!token) navigate("/login");
   }, [navigate]);
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    navigate("/login");
-  };
+  const handleLogout = async () => {
+  try {
+    await fetch('http://localhost:3000/api/logout', { 
+      method: 'POST',
+      credentials: 'include' 
+    });
+    // Redirecting will trigger App.jsx to realize the user is logged out
+    window.location.href = '/login';
+  } catch (err) {
+    console.error("Logout failed", err);
+  }
+};
 
   return (
     <div className="dashboard-layout">
