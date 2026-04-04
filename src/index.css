@@ -1,11 +1,16 @@
+.logoimg {border-radius: 50%;
+width: 10%;
+
+}
+
 /* Base Styles to center the form */
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
+  
+ 
   min-width: 320px;
   min-height: 100vh;
-  background-color: #121212; /* Dark background */
+  background-color: #696969; /* Dark background */
   justify-content: center;
   font-family: 'Inter', sans-serif;
 }
@@ -126,6 +131,9 @@ body {
   to { transform: scale(1.8); opacity: 0; }
 }
 /* Dashboard Layout */
+
+
+
 .dashboard-layout {
   display: flex;
   height: 100vh;

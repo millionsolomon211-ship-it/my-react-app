@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 
 function Signup() {
   const [formData, setFormData] = useState({ 
-    full_Name: '', // Matches the backend variable now
+    full_Name: '', 
     username: '', 
     email: '', 
     phone: '', 
@@ -20,16 +20,17 @@ function Signup() {
       const response = await fetch('http://localhost:3000/api/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        // Send the JSON as is
-        body: JSON.stringify(formData)
+        body: JSON.stringify(formData),
+        // CRITICAL FIX: This tells the browser it is allowed to save the JWT cookie sent by the backend
+        credentials: 'include' 
       });
       
       const data = await response.json();
 
       if (response.ok) {
-        // SUCCESS: Redirect to login 
-        // We don't store the token in localStorage anymore!
-        navigate('/login');
+        // SUCCESS: We force a window reload to /dashboard. 
+        // This makes App.jsx re-run its check-auth function, see the new cookie, and log you in!
+        window.location.href = '/dashboard';
       } else {
         setErrorMessage(data.error || data.message || "Signup failed");
       }

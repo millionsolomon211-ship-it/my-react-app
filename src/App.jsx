@@ -11,9 +11,10 @@ function App() {
     const verifyUser = async () => {
       try {
         // We must include credentials to send the cookie to the server
-        const res = await fetch('http://localhost:3000/api/check-auth', { 
+        const res = await fetch('http://localhost:3000/api/check-auth',{ 
             credentials: 'include' 
         });
+        
         const data = await res.json();
         setIsAuthenticated(data.authenticated);
       } catch (err) {

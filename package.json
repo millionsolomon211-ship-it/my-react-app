@@ -4,11 +4,10 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "lint": "eslint .",
-    "preview": "vite preview"
-  },
+  "dev": "vite --host",
+  "build": "vite build",
+  "preview": "vite preview --host"
+},
   "dependencies": {
     "axios": "^1.13.6",
     "bcryptjs": "^3.0.3",
